@@ -1,19 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><%= title %></title>
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-  <link rel="stylesheet" href="/index.css" />
+  <title>Chess Game</title>
+  <link rel="stylesheet" href="/index.css">
 </head>
-<body class="bg-zinc-900">
-  <div class="w-full h-screen flex items-center justify-center">
-    <div class="chessboard "></div>
+<body>
+  <div id="white-info" class="player-info">
+    <h3>White: <span id="white-name">Waiting...</span></h3>
+    <div>Time: <span id="white-timer">05:00</span></div>
+  </div>
+  <div class="chessboard"></div>
+  
+  <div id="black-info" class="player-info">
+    <h3>Black: <span id="black-name">Waiting...</span></h3>
+    <div>Time: <span id="black-timer">05:00</span></div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/chess.js@0.10.3/chess.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js" crossorigin="anonymous"></script>
+
   <script src="/index.js"></script>
 </body>
 </html>
