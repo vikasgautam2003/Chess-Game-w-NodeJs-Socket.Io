@@ -1,6 +1,10 @@
+
+
 const socket = io();
 const chess = new Chess();
 const boardElement = document.querySelector('.chessboard');
+const loader = document.getElementById('loader-overlay');
+const loaderMessage = document.getElementById('loader-message');
 
 let draggedPiece = null;
 let sourceSquare = null;
@@ -11,7 +15,6 @@ let blackTime = 5 * 60;
 let whiteTimer, blackTimer;
 let whiteName = "", blackName = "";
 let moveHistory = [];
-
 
 const updateTimerDisplay = (id, timeLeft) => {
   const mins = String(Math.floor(timeLeft / 60)).padStart(2, '0');
@@ -57,11 +60,9 @@ const startBlackTimer = () => {
   }, 1000);
 };
 
-
 const renderBoard = () => {
   const board = chess.board();
   boardElement.innerHTML = '';
-
   const rows = playerRole === 'b' ? [...board].reverse() : board;
 
   rows.forEach((row, rowIndex) => {
@@ -70,7 +71,6 @@ const renderBoard = () => {
 
     cols.forEach((square, colIndex) => {
       const displayCol = playerRole === 'b' ? 7 - colIndex : colIndex;
-
       const squareDiv = document.createElement('div');
       squareDiv.classList.add('square', (displayRow + displayCol) % 2 === 0 ? 'light' : 'dark');
       squareDiv.dataset.row = displayRow;
@@ -80,7 +80,6 @@ const renderBoard = () => {
         const pieceDiv = document.createElement('div');
         pieceDiv.classList.add('piece', square.color === 'w' ? 'white' : 'black');
         pieceDiv.innerHTML = getPieceUnicode(square);
-
         const canDrag = playerRole === square.color;
         pieceDiv.draggable = canDrag;
 
@@ -104,7 +103,6 @@ const renderBoard = () => {
       squareDiv.addEventListener('drop', (e) => {
         e.preventDefault();
         if (!draggedPiece || !sourceSquare) return;
-
         const targetSquare = {
           row: parseInt(squareDiv.dataset.row),
           col: parseInt(squareDiv.dataset.col),
@@ -136,11 +134,30 @@ const getPieceUnicode = (piece) => {
   return unicodes[piece.type + piece.color] || '';
 };
 
+socket.on('waitingForOpponent', () => {
+  loaderMessage.textContent = 'Finding an opponent...';
+  loader.style.display = 'flex';
+});
 
 socket.on('playerRole', (role) => {
   playerRole = role;
+  loaderMessage.textContent = 'Finding an opponent...';
+  loader.style.display = 'flex';
   const name = prompt("Enter your name:");
-  socket.emit('setName', { name, role });
+  socket.emit('setName', { name, role: playerRole });
+});
+
+socket.on('opponentFound', () => {
+  loaderMessage.textContent = 'Paired!';
+  setTimeout(() => {
+    loader.style.display = 'none';
+    renderBoard();
+  }, 1000);
+});
+
+socket.on('spectatorRole', () => {
+  playerRole = null;
+  loader.style.display = 'none';
   renderBoard();
 });
 
@@ -151,20 +168,11 @@ socket.on('updateNames', ({ white, black }) => {
   document.getElementById('black-name').textContent = black || 'Waiting...';
 });
 
-socket.on('spectatorRole', () => {
-  playerRole = null;
-  renderBoard();
-});
-
-
 socket.on('boardState', (fen) => {
   chess.load(fen);
   renderBoard();
-
-  const turn = chess.turn(); 
-
+  const turn = chess.turn();
   if (turn === 'w') {
-    
     clearInterval(blackTimer);
     startWhiteTimer();
   } else {
@@ -189,7 +197,6 @@ socket.on("gameOver", ({ result, reason }) => {
   alert(`Game Over! ${result} - ${reason}`);
 });
 
-// Initialize
 renderBoard();
 updateTimerDisplay("white-timer", whiteTime);
 updateTimerDisplay("black-timer", blackTime);

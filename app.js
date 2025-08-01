@@ -6,7 +6,8 @@ const connectDB = require('./db');
 
 
 const indexRouter = require('./routes/index');       
-const setupSocket = require('./sockets/chess');      
+const setupSocket = require('./sockets/chess');  
+const homepageRouter = require('./routes/home');    
 
 const app = express();
 const server = http.createServer(app);
@@ -18,7 +19,9 @@ app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-app.use('/', indexRouter);
+app.use('/', homepageRouter);
+app.use('/play', indexRouter);
+
 
 
 setupSocket(io);

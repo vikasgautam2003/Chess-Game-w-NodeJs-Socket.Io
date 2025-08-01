@@ -1,3 +1,5 @@
+
+
 const { Chess } = require('chess.js');
 const chess = new Chess();
 
@@ -11,9 +13,12 @@ function setupSocket(io) {
     if (!players.white) {
       players.white = socket.id;
       socket.emit('playerRole', 'w');
+      socket.emit('waitingForOpponent');
     } else if (!players.black) {
       players.black = socket.id;
       socket.emit('playerRole', 'b');
+      io.to(players.white).emit('opponentFound');
+      io.to(players.black).emit('opponentFound');
     } else {
       socket.emit('spectatorRole');
     }
@@ -51,6 +56,8 @@ function setupSocket(io) {
     socket.on("disconnect", () => {
       if (socket.id === players.white) delete players.white;
       if (socket.id === players.black) delete players.black;
+      playerNames = { white: '', black: '' };
+      io.emit('updateNames', playerNames);
     });
   });
 }
