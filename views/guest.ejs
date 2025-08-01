@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Welcome Guest - VChess.com</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-gray-900 to-black text-white min-h-screen flex flex-col">
+
+  <nav class="bg-gray-800 shadow p-4 flex justify-between items-center">
+    <div class="text-lg font-semibold">Chess.com</div>
+    <div class="text-gray-300">Hello, <span class="font-bold">Guest</span></div>
+    <div>
+      <a href="/login" class="text-yellow-400 hover:text-yellow-300 font-semibold px-4 py-2 rounded hover:bg-yellow-900 transition">Login</a>
+      <a href="/signup" class="ml-2 text-green-400 hover:text-green-300 font-semibold px-4 py-2 rounded hover:bg-green-900 transition">Sign Up</a>
+    </div>
+  </nav>
+
+
+  <main class="flex-grow flex flex-col justify-center items-center px-6 py-12">
+    <h1 class="text-5xl font-extrabold mb-6 text-yellow-400">Welcome to VChess.com</h1>
+    <p class="text-gray-300 text-xl mb-12 max-w-xl text-center">
+      Play chess online instantly without an account or sign up for full features.
+    </p>
+    <div class="space-x-6">
+      <a href="/guest/play" class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 px-8 rounded-full shadow-lg transition">
+        🎮 Play as Guest
+      </a>
+      <a href="/signup" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition">
+        ✍️ Create Account
+      </a>
+    </div>
+  </main>
+
+  <footer class="text-gray-500 text-center py-6">
+    &copy; 2025 Chess.com. All rights reserved.
+  </footer>
+
+</body>
+</html>

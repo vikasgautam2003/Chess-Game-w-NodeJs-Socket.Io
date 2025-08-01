@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Welcome Back - Chess.com</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-indigo-900 to-purple-900 text-white min-h-screen flex flex-col">
+
+  <nav class="bg-gray-900 shadow p-4 flex justify-between items-center">
+    <div class="text-lg font-semibold">Chess.com</div>
+    <div class="text-gray-300">Hello, <span class="font-bold"><%= username %></span></div>
+    <div>
+      <a href="/auth/logout" class="text-red-500 hover:text-red-400 font-semibold px-4 py-2 rounded hover:bg-red-900 transition">
+        Logout
+      </a>
+    </div>
+  </nav>
+
+  <main class="flex-grow flex flex-col justify-center items-center px-6 py-12">
+    <h1 class="text-5xl font-extrabold mb-6 text-yellow-300">Welcome back, <%= username %>!</h1>
+    <p class="text-gray-300 text-xl mb-12 max-w-xl text-center">
+      Ready for a new challenge? Start playing chess now!
+    </p>
+    <div class="space-x-6">
+      <a href="/user/play" class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 px-8 rounded-full shadow-lg transition">
+        ♟️ Play Game
+      </a>
+      <a href="/profile" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition">
+        👤 Profile
+      </a>
+    </div>
+  </main>
+
+  <footer class="text-gray-400 text-center py-6">
+    &copy; 2025 Chess.com. All rights reserved.
+  </footer>
+</body>
+</html>

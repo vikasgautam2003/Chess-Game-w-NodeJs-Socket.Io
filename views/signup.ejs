@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up - Chess.com</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-gray-900 to-black min-h-screen flex items-center justify-center px-4 py-8">
+
+  <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 space-y-6 text-gray-800">
+    <div class="text-center">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">Create an Account</h1>
+      <p class="text-gray-500">Join Chess.com and start playing today</p>
+    </div>
+
+    <form action="/auth/signup" method="POST" class="space-y-4">
+      <div>
+        <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+        <input type="text" name="username" id="username" required
+               class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+      </div>
+
+      <div>
+        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+        <input type="email" name="email" id="email" required
+               class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+      </div>
+
+      <div>
+        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+        <input type="password" name="password" id="password" required
+               class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+      </div>
+
+      <div>
+        <button type="submit"
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition">
+          Sign Up
+        </button>
+      </div>
+    </form>
+
+    <div class="text-sm text-center text-gray-600">
+      Already have an account? <a href="/auth/login" class="text-blue-500 hover:underline">Log In</a>
+    </div>
+  </div>
+
+</body>
+</html>
