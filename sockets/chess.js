@@ -1,141 +1,102 @@
 
 
-// const { Chess } = require('chess.js');
-// const chess = new Chess();
-
-// let players = {};
-// let playerNames = { white: '', black: '' };
-
-// function setupSocket(io) {
-//   io.on('connection', (socket) => {
-//     console.log('New connection:', socket.id);
-
-//     if (!players.white) {
-//       players.white = socket.id;
-//       socket.emit('playerRole', 'w');
-//       socket.emit('waitingForOpponent');
-//     } else if (!players.black) {
-//       players.black = socket.id;
-//       socket.emit('playerRole', 'b');
-//       io.to(players.white).emit('opponentFound');
-//       io.to(players.black).emit('opponentFound');
-//     } else {
-//       socket.emit('spectatorRole');
-//     }
-
-//     socket.on('setName', ({ name, role }) => {
-//       if (role === 'w') playerNames.white = name;
-//       else if (role === 'b') playerNames.black = name;
-//       io.emit('updateNames', playerNames);
-//     });
-
-//     socket.on("move", (move) => {
-//       try {
-//         if (chess.turn() === 'w' && socket.id !== players.white) {
-//           socket.emit("invalidMove", "It's White's turn!");
-//           return;
-//         }
-//         if (chess.turn() === 'b' && socket.id !== players.black) {
-//           socket.emit("invalidMove", "It's Black's turn!");
-//           return;
-//         }
-
-//         const validMove = chess.move(move);
-//         if (validMove) {
-//           io.emit("move", move);
-//           io.emit("boardState", chess.fen());
-//         } else {
-//           socket.emit("invalidMove", "Invalid move!");
-//         }
-//       } catch (err) {
-//         console.error("Move error:", err.message);
-//         socket.emit("invalidMove", "Server error: Invalid move.");
-//       }
-//     });
-
-//     socket.on("disconnect", () => {
-//       if (socket.id === players.white) delete players.white;
-//       if (socket.id === players.black) delete players.black;
-//       playerNames = { white: '', black: '' };
-//       io.emit('updateNames', playerNames);
-//     });
-//   });
-// }
-
-// module.exports = setupSocket;
-
 
 const { Chess } = require('chess.js');
-const chess = new Chess();
 
-let players = {};
-let playerNames = { white: '', black: '' };
+const games = {};
 
 function setupSocket(io) {
   io.on('connection', (socket) => {
     console.log('New connection:', socket.id);
+    socket.data.username = null;
+    socket.data.role = null;
+    socket.data.gameId = null;
 
-    if (!players.white) {
-      players.white = socket.id;
+    // Matchmaking
+    let game = Object.values(games).find(g => !g.black);
+    if (!game) {
+      const newGameId = socket.id;
+      games[newGameId] = {
+        white: socket.id,
+        black: null,
+        chess: new Chess(),
+        names: { white: '', black: '' }
+      };
+      socket.data.role = 'w';
+      socket.data.gameId = newGameId;
       socket.emit('playerRole', 'w');
       socket.emit('waitingForOpponent');
-    } else if (!players.black) {
-      players.black = socket.id;
-      socket.emit('playerRole', 'b');
-      io.to(players.white).emit('opponentFound');
-      io.to(players.black).emit('opponentFound');
     } else {
-      socket.emit('spectatorRole');
+      game.black = socket.id;
+      socket.data.role = 'b';
+      socket.data.gameId = Object.keys(games).find(id => games[id] === game);
+      io.to(game.white).emit('opponentFound');
+      io.to(game.black).emit('opponentFound');
+      io.to(game.white).emit('playerRole', 'w');
+      io.to(game.black).emit('playerRole', 'b');
     }
 
+    // Set username
     socket.on('setName', ({ name, role }) => {
-      if (role === 'w') playerNames.white = name;
-      else if (role === 'b') playerNames.black = name;
-      io.emit('updateNames', playerNames);
+      const game = games[socket.data.gameId];
+      if (!game) return;
+      socket.data.username = name;
+      if (role === 'w') game.names.white = name;
+      else if (role === 'b') game.names.black = name;
+      io.to(game.white).emit('updateNames', game.names);
+      if (game.black) io.to(game.black).emit('updateNames', game.names);
     });
 
+    // Handle moves
     socket.on("move", (move) => {
-      try {
-        if (chess.turn() === 'w' && socket.id !== players.white) {
-          socket.emit("invalidMove", "It's White's turn!");
-          return;
-        }
-        if (chess.turn() === 'b' && socket.id !== players.black) {
-          socket.emit("invalidMove", "It's Black's turn!");
-          return;
-        }
+      const game = games[socket.data.gameId];
+      if (!game) return;
+      const chess = game.chess;
 
-        const validMove = chess.move(move);
-        if (validMove) {
-          io.emit("move", move);
-          io.emit("boardState", chess.fen());
+      const currentTurn = chess.turn();
+      if ((currentTurn === 'w' && socket.id !== game.white) ||
+          (currentTurn === 'b' && socket.id !== game.black)) {
+        socket.emit("invalidMove", "It's not your turn!");
+        return;
+      }
 
-          // ✅ Check for checkmate
-          if (chess.isCheckmate()) {
-            const winner = chess.turn() === 'w' ? playerNames.black : playerNames.white;
-            const winnerColor = chess.turn() === 'w' ? 'Black' : 'White';
+      const validMove = chess.move(move);
+      if (validMove) {
+        io.to(game.white).emit("move", move);
+        io.to(game.black).emit("move", move);
+        io.to(game.white).emit("boardState", chess.fen());
+        io.to(game.black).emit("boardState", chess.fen());
 
-            io.emit("gameOver", {
-              result: `${winnerColor} (${winner}) wins`,
-              reason: "Checkmate"
-            });
-          }
-        } else {
-          socket.emit("invalidMove", "Invalid move!");
+        if (chess.isCheckmate()) {
+          const winnerColor = currentTurn === 'w' ? 'Black' : 'White';
+          const winnerName = currentTurn === 'w' ? game.names.black : game.names.white;
+          io.to(game.white).emit("gameOver", {
+            result: `${winnerColor} (${winnerName}) wins`,
+            reason: "Checkmate"
+          });
+          io.to(game.black).emit("gameOver", {
+            result: `${winnerColor} (${winnerName}) wins`,
+            reason: "Checkmate"
+          });
         }
-      } catch (err) {
-        console.error("Move error:", err.message);
-        socket.emit("invalidMove", "Server error: Invalid move.");
+      } else {
+        socket.emit("invalidMove", "Invalid move!");
       }
     });
 
     socket.on("disconnect", () => {
-      if (socket.id === players.white) delete players.white;
-      if (socket.id === players.black) delete players.black;
-      playerNames = { white: '', black: '' };
-      io.emit('updateNames', playerNames);
+      const gameId = socket.data.gameId;
+      if (!gameId || !games[gameId]) return;
+      const game = games[gameId];
+
+      if (socket.id === game.white || socket.id === game.black) {
+        io.to(game.white).emit('updateNames', { white: '', black: '' });
+        io.to(game.black).emit('updateNames', { white: '', black: '' });
+        delete games[gameId];
+      }
     });
   });
 }
 
 module.exports = setupSocket;
+

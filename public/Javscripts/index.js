@@ -1,10 +1,10 @@
 
-
 const socket = io();
 const chess = new Chess();
 const boardElement = document.querySelector('.chessboard');
 const loader = document.getElementById('loader-overlay');
 const loaderMessage = document.getElementById('loader-message');
+const username = document.getElementById('player-username')?.value || 'Guest';
 
 let draggedPiece = null;
 let sourceSquare = null;
@@ -143,16 +143,11 @@ socket.on('playerRole', (role) => {
   playerRole = role;
   loaderMessage.textContent = 'Finding an opponent...';
   loader.style.display = 'flex';
-
-
   if (role === 'b') {
     document.getElementById('game-container').classList.add('rotate-board');
   }
-
-  const name = prompt("Enter your name:");
-  socket.emit('setName', { name, role: playerRole });
+  socket.emit('setName', { name: username, role: playerRole });
 });
-
 
 socket.on('opponentFound', () => {
   loaderMessage.textContent = 'Paired!';
@@ -197,7 +192,6 @@ socket.on('move', (move) => {
 socket.on('invalidMove', (msg) => {
   alert(msg);
 });
-
 
 socket.on("gameOver", ({ result, reason }) => {
   clearInterval(whiteTimer);
