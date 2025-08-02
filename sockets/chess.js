@@ -28,8 +28,10 @@ function setupSocket(io) {
       socket.emit('waitingForOpponent');
     } else {
       game.black = socket.id;
+      const gameId = Object.keys(games).find(id => games[id] === game);
       socket.data.role = 'b';
-      socket.data.gameId = Object.keys(games).find(id => games[id] === game);
+      socket.data.gameId = gameId;
+
       io.to(game.white).emit('opponentFound');
       io.to(game.black).emit('opponentFound');
       io.to(game.white).emit('playerRole', 'w');
@@ -54,13 +56,22 @@ function setupSocket(io) {
       const chess = game.chess;
 
       const currentTurn = chess.turn();
-      if ((currentTurn === 'w' && socket.id !== game.white) ||
-          (currentTurn === 'b' && socket.id !== game.black)) {
+      const isWhiteTurn = currentTurn === 'w';
+      const isValidPlayer = (isWhiteTurn && socket.id === game.white) || (!isWhiteTurn && socket.id === game.black);
+
+      if (!isValidPlayer) {
         socket.emit("invalidMove", "It's not your turn!");
         return;
       }
 
-      const validMove = chess.move(move);
+      let validMove;
+      try {
+        validMove = chess.move(move);
+      } catch (err) {
+        socket.emit("invalidMove", "Invalid move!");
+        return;
+      }
+
       if (validMove) {
         io.to(game.white).emit("move", move);
         io.to(game.black).emit("move", move);
@@ -84,6 +95,7 @@ function setupSocket(io) {
       }
     });
 
+    // Disconnect cleanup
     socket.on("disconnect", () => {
       const gameId = socket.data.gameId;
       if (!gameId || !games[gameId]) return;
@@ -99,4 +111,3 @@ function setupSocket(io) {
 }
 
 module.exports = setupSocket;
-
