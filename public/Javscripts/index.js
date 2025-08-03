@@ -1,163 +1,136 @@
-
-
 const socket = io();
 const chess = new Chess();
-const boardElement = document.querySelector('.chessboard');
+const board = document.querySelector('.chessboard');
 const loader = document.getElementById('loader-overlay');
 const loaderMessage = document.getElementById('loader-message');
 const username = document.getElementById('player-username')?.value || 'Guest';
+const chatBox = document.getElementById('chat-messages');
+const chatInput = document.getElementById('chat-input');
+const sendBtn = document.getElementById('send-chat');
 
-let draggedPiece = null;
-let sourceSquare = null;
-let playerRole = null;
-let whiteTime = 5 * 60;
-let blackTime = 5 * 60;
-let whiteTimer, blackTimer;
-let whiteName = "", blackName = "";
+let playerRole, whiteTimer, blackTimer;
+let whiteTime = 300, blackTime = 300;
 let moveHistory = [];
 
-function showPopup(message) {
+sendBtn.addEventListener('click', () => {
+  const msg = chatInput.value.trim();
+  if (msg) {
+    socket.emit('chatMessage', { message: msg, username });
+    chatInput.value = '';
+  }
+});
+
+chatInput.addEventListener('keypress', e => {
+  if (e.key === 'Enter') sendBtn.click();
+});
+
+socket.on('chatMessage', ({ message, username }) => {
+  const d = document.createElement('div');
+  d.textContent = `${username}: ${message}`;
+  chatBox.appendChild(d);
+  chatBox.scrollTop = chatBox.scrollHeight;
+});
+
+function showPopup(msg) {
   const popup = document.createElement('div');
-  popup.className = 'fixed top-6 left-1/2 transform -translate-x-1/2 z-50 bg-white border-l-4 border-blue-500 text-blue-800 p-4 rounded shadow-lg flex items-center justify-between min-w-[280px] max-w-sm';
-  popup.innerHTML = `
-    <div class="mr-4 font-semibold">${message}</div>
-    <button onclick="this.parentElement.remove()" class="text-xl font-bold text-blue-500 hover:text-red-500">&times;</button>
-  `;
-  document.body.appendChild(popup);
+  popup.className = 'fixed top-6 left-1/2 transform -translate-x-1/2 z-50 bg-white border-l-4 border-blue-500 text-blue-800 p-4 rounded shadow-lg min-w-[280px] max-w-sm';
+  popup.innerHTML = `<div>${msg}</div><button onclick="this.parentElement.remove()">×</button>`;
+  document.getElementById('popup-container').appendChild(popup);
   setTimeout(() => popup.remove(), 2000);
 }
 
-function showPopupWithButton(message, buttonText, callback) {
-  const popup = document.createElement('div');
-  popup.className = 'fixed top-6 left-1/2 transform -translate-x-1/2 z-[9999] bg-white border-l-4 border-red-500 text-gray-800 p-4 rounded shadow-xl flex flex-col items-center max-w-sm w-full';
-  popup.innerHTML = `
-    <div class="mb-3 font-semibold text-center">${message}</div>
-    <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-all">${buttonText}</button>
-  `;
-  popup.querySelector('button').addEventListener('click', () => {
-    popup.remove();
-    callback();
-  });
-  document.body.appendChild(popup);
+function showPopupWithButton(msg, btn, cb) {
+  const p = document.createElement('div');
+  p.className = 'fixed top-6 left-1/2 transform -translate-x-1/2 z-[9999] bg-white border-l-4 border-red-500 text-gray-800 p-4 rounded shadow-xl flex flex-col items-center max-w-sm w-full';
+  p.innerHTML = `<div class="mb-3">${msg}</div><button class="bg-red-500 text-white px-4 py-2 rounded">${btn}</button>`;
+  p.querySelector('button').onclick = () => { p.remove(); cb(); };
+  document.getElementById('popup-container').appendChild(p);
 }
 
-const updateTimerDisplay = (id, timeLeft) => {
-  const mins = String(Math.floor(timeLeft / 60)).padStart(2, '0');
-  const secs = String(timeLeft % 60).padStart(2, '0');
-  document.getElementById(id).textContent = `${mins}:${secs}`;
-};
+function updateTimer(id, t) {
+  document.getElementById(id).textContent = `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}`;
+}
 
-const startWhiteTimer = () => {
+function startWhite() {
   clearInterval(blackTimer);
   whiteTimer = setInterval(() => {
     whiteTime--;
-    updateTimerDisplay('white-timer', whiteTime);
+    updateTimer('white-timer', whiteTime);
     if (whiteTime <= 0) {
       clearInterval(whiteTimer);
-      socket.emit("gameOver", {
-        fen: chess.fen(),
-        whiteUsername: whiteName,
-        blackUsername: blackName,
-        result: "0-1",
-        moves: moveHistory,
-        reason: "White timed out"
-      });
+      socket.emit('gameOver', { result: '0-1', reason: 'White timed out' });
     }
   }, 1000);
-};
+}
 
-const startBlackTimer = () => {
+function startBlack() {
   clearInterval(whiteTimer);
   blackTimer = setInterval(() => {
     blackTime--;
-    updateTimerDisplay('black-timer', blackTime);
+    updateTimer('black-timer', blackTime);
     if (blackTime <= 0) {
       clearInterval(blackTimer);
-      socket.emit("gameOver", {
-        fen: chess.fen(),
-        whiteUsername: whiteName,
-        blackUsername: blackName,
-        result: "1-0",
-        moves: moveHistory,
-        reason: "Black timed out"
-      });
+      socket.emit('gameOver', { result: '1-0', reason: 'Black timed out' });
     }
   }, 1000);
-};
+}
 
-const renderBoard = () => {
-  const board = chess.board();
-  boardElement.innerHTML = '';
-  const rows = playerRole === 'b' ? [...board].reverse() : board;
+function getPieceSymbol(piece) {
+  const map = {
+    pw: '♙', pb: '♟', rw: '♖', rb: '♜',
+    nw: '♘', nb: '♞', bw: '♗', bb: '♝',
+    qw: '♕', qb: '♛', kw: '♔', kb: '♚'
+  };
+  return map[piece.type + piece.color] || '';
+}
 
-  rows.forEach((row, rowIndex) => {
-    const displayRow = playerRole === 'b' ? 7 - rowIndex : rowIndex;
+function renderBoard() {
+  const currentBoard = chess.board();
+  const rows = playerRole === 'b' ? [...currentBoard].reverse() : currentBoard;
+  board.innerHTML = '';
+  rows.forEach((row, i) => {
+    const rowIdx = playerRole === 'b' ? 7 - i : i;
     const cols = playerRole === 'b' ? [...row].reverse() : row;
-
-    cols.forEach((square, colIndex) => {
-      const displayCol = playerRole === 'b' ? 7 - colIndex : colIndex;
+    cols.forEach((square, j) => {
+      const colIdx = playerRole === 'b' ? 7 - j : j;
       const squareDiv = document.createElement('div');
-      squareDiv.classList.add('square', (displayRow + displayCol) % 2 === 0 ? 'light' : 'dark');
-      squareDiv.dataset.row = displayRow;
-      squareDiv.dataset.col = displayCol;
+      squareDiv.className = `square ${(rowIdx + colIdx) % 2 === 0 ? 'light' : 'dark'}`;
+      squareDiv.dataset.row = rowIdx;
+      squareDiv.dataset.col = colIdx;
 
       if (square) {
         const pieceDiv = document.createElement('div');
-        pieceDiv.classList.add('piece', square.color === 'w' ? 'white' : 'black');
-        pieceDiv.innerHTML = getPieceUnicode(square);
-        const canDrag = playerRole === square.color;
-        pieceDiv.draggable = canDrag;
+        pieceDiv.className = `piece ${square.color === 'w' ? 'white' : 'black'}`;
+        pieceDiv.innerHTML = getPieceSymbol(square);
 
-        pieceDiv.addEventListener('dragstart', (e) => {
-          if (!canDrag) return;
-          draggedPiece = pieceDiv;
-          sourceSquare = { row: displayRow, col: displayCol };
-          e.dataTransfer.setData('text/plain', '');
-        });
-
-        pieceDiv.addEventListener('dragend', () => {
-          draggedPiece = null;
-          sourceSquare = null;
-        });
+        if (playerRole === square.color) {
+          pieceDiv.setAttribute('draggable', true);
+          pieceDiv.addEventListener('dragstart', (e) => {
+            pieceDiv.classList.add('dragging');
+            e.dataTransfer.setData('text/plain', '');
+          });
+          pieceDiv.addEventListener('dragend', () => {
+            pieceDiv.classList.remove('dragging');
+          });
+        }
 
         squareDiv.appendChild(pieceDiv);
       }
 
-      squareDiv.addEventListener('dragover', (e) => e.preventDefault());
-
-      squareDiv.addEventListener('drop', (e) => {
+      squareDiv.addEventListener('dragover', e => e.preventDefault());
+      squareDiv.addEventListener('drop', e => {
         e.preventDefault();
-        if (!draggedPiece || !sourceSquare) return;
-        const targetSquare = {
-          row: parseInt(squareDiv.dataset.row),
-          col: parseInt(squareDiv.dataset.col),
-        };
-
-        const move = {
-          from: `${String.fromCharCode(97 + sourceSquare.col)}${8 - sourceSquare.row}`,
-          to: `${String.fromCharCode(97 + targetSquare.col)}${8 - targetSquare.row}`,
-          promotion: 'q',
-        };
-
-        socket.emit('move', move);
+        const dragging = document.querySelector('.dragging');
+        if (!dragging) return;
+        const from = `${String.fromCharCode(97 + parseInt(dragging.parentElement.dataset.col))}${8 - parseInt(dragging.parentElement.dataset.row)}`;
+        const to = `${String.fromCharCode(97 + colIdx)}${8 - rowIdx}`;
+        socket.emit('move', { from, to, promotion: 'q' });
       });
 
-      boardElement.appendChild(squareDiv);
+      board.appendChild(squareDiv);
     });
   });
-};
-
-const getPieceUnicode = (piece) => {
-  const unicodes = {
-    pw: '♙', pb: '♟',
-    rw: '♖', rb: '♜',
-    nw: '♘', nb: '♞',
-    bw: '♗', bb: '♝',
-    qw: '♕', qb: '♛',
-    kw: '♔', kb: '♚'
-  };
-  return unicodes[piece.type + piece.color] || '';
-};
+}
 
 socket.on('waitingForOpponent', () => {
   loaderMessage.textContent = 'Finding an opponent...';
@@ -166,12 +139,9 @@ socket.on('waitingForOpponent', () => {
 
 socket.on('playerRole', (role) => {
   playerRole = role;
-  loaderMessage.textContent = 'Finding an opponent...';
   loader.style.display = 'flex';
-  if (role === 'b') {
-    document.getElementById('game-container').classList.add('rotate-board');
-  }
-  socket.emit('setName', { name: username, role: playerRole });
+  if (role === 'b') document.getElementById('game-container').classList.add('rotate-board');
+  socket.emit('setName', { name: username, role });
 });
 
 socket.on('opponentFound', () => {
@@ -179,19 +149,11 @@ socket.on('opponentFound', () => {
   setTimeout(() => {
     loader.style.display = 'none';
     renderBoard();
-    showPopup("Game Starts!! White will start.");
+    showPopup("Game starts!");
   }, 1000);
 });
 
-socket.on('spectatorRole', () => {
-  playerRole = null;
-  loader.style.display = 'none';
-  renderBoard();
-});
-
 socket.on('updateNames', ({ white, black }) => {
-  whiteName = white;
-  blackName = black;
   document.getElementById('white-name').textContent = white || 'Waiting...';
   document.getElementById('black-name').textContent = black || 'Waiting...';
 });
@@ -199,46 +161,50 @@ socket.on('updateNames', ({ white, black }) => {
 socket.on('boardState', (fen) => {
   chess.load(fen);
   renderBoard();
-  const turn = chess.turn();
-  if (turn === 'w') {
-    clearInterval(blackTimer);
-    startWhiteTimer();
-  } else {
-    clearInterval(whiteTimer);
-    startBlackTimer();
-  }
+  chess.turn() === 'w' ? startWhite() : startBlack();
 });
 
 socket.on('move', (move) => {
   chess.move(move);
   moveHistory.push(move);
   renderBoard();
+  const li = document.createElement('li');
+  li.textContent = `${move.from} → ${move.to}`;
+  document.getElementById('move-list').appendChild(li);
+  document.getElementById('move-list').scrollTop = document.getElementById('move-list').scrollHeight;
 });
 
-socket.on('invalidMove', (msg) => {
-  showPopup(msg);
-});
+socket.on('invalidMove', (msg) => showPopup(msg));
 
-socket.on("gameOver", ({ result, reason }) => {
+socket.on('gameOver', ({ result, reason }) => {
   clearInterval(whiteTimer);
   clearInterval(blackTimer);
-  showPopup(`Game Over! ${result} - ${reason}`);
+  showPopup(`Game Over: ${result} – ${reason}`);
 });
 
-
-
-
-socket.on("opponentLeft", ({ message }) => {
+socket.on('opponentLeft', ({ message }) => {
   showPopupWithButton(message, "Return Home", () => {
-    const playerName = username.trim().toLowerCase();
-    const isGuest = !playerName || playerName === 'guest' || playerName.includes('guest');
-    const redirectUrl = isGuest ? "/guest/home" : "/user/home";
-    window.location.href = redirectUrl;
+    const lower = username.toLowerCase();
+    window.location.href = lower.includes('guest') ? "/guest/home" : "/user/home";
   });
 });
 
 
 
+const toggleHistoryBtn = document.getElementById('toggle-history');
+const toggleChatBtn = document.getElementById('toggle-chat');
+const moveHistoryPanel = document.getElementById('move-history');
+const chatPanel = document.getElementById('chat-container');
+
+toggleHistoryBtn.addEventListener('click', () => {
+  moveHistoryPanel.classList.toggle('modal');
+});
+
+toggleChatBtn.addEventListener('click', () => {
+  chatPanel.classList.toggle('modal');
+});
+
+
 renderBoard();
-updateTimerDisplay("white-timer", whiteTime);
-updateTimerDisplay("black-timer", blackTime);
+updateTimer('white-timer', whiteTime);
+updateTimer('black-timer', blackTime);

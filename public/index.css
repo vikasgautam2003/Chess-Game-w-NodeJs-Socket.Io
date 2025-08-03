@@ -75,6 +75,10 @@
   src: url("/fonts/merida.ttf") format("truetype");
 }
 
+body {
+  font-family: sans-serif;
+}
+
 .chessboard {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
@@ -84,6 +88,7 @@
   border: 4px solid #444;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   background-color: #f0d9b5;
+  z-index: 10;
 }
 
 #game-container {
@@ -91,16 +96,15 @@
   flex-direction: column;
   align-items: center;
   transition: transform 0.5s ease;
+  position: relative;
+  z-index: 10;
 }
 
 #game-container.rotate-board {
   transform: rotate(180deg);
 }
 
-#game-container.rotate-board .chessboard {
-  transform: rotate(180deg);
-}
-
+#game-container.rotate-board .chessboard,
 #game-container.rotate-board #white-info,
 #game-container.rotate-board #black-info {
   transform: rotate(180deg);
@@ -128,6 +132,7 @@
   font-size: 2.5rem;
   line-height: 1;
   text-shadow: 0 0 1px #00000033;
+  z-index: 10;
 }
 
 .piece:active {
@@ -135,43 +140,105 @@
   transform: scale(1.1);
 }
 
-#move-history {
+#move-history,
+#chat-container {
+  position: relative;
+  z-index: 10;
   scrollbar-width: thin;
   scrollbar-color: #a0aec0 #edf2f7;
 }
 
-#move-history::-webkit-scrollbar {
+#move-history::-webkit-scrollbar,
+#chat-messages::-webkit-scrollbar {
   width: 6px;
 }
 
-#move-history::-webkit-scrollbar-thumb {
+#move-history::-webkit-scrollbar-thumb,
+#chat-messages::-webkit-scrollbar-thumb {
   background-color: #a0aec0;
   border-radius: 6px;
 }
 
-#move-history::-webkit-scrollbar-track {
+#move-history::-webkit-scrollbar-track,
+#chat-messages::-webkit-scrollbar-track {
   background-color: #edf2f7;
 }
 
 #popup-container > div {
   animation: fadeInOut 3s ease forwards;
+  pointer-events: auto;
+}
+
+#popup-container {
+  pointer-events: none;
 }
 
 @keyframes fadeInOut {
-  0% { opacity: 0; transform: translateY(-20px); }
-  10% { opacity: 1; transform: translateY(0); }
-  90% { opacity: 1; }
-  100% { opacity: 0; transform: translateY(-20px); }
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
 }
 
-@media (max-width: 600px) {
-  .piece {
-    font-size: 1.6rem;
+/* 🔁 Updated to collapse earlier: tablets + small laptops */
+@media (max-width: 1024px) {
+  .chessboard {
+    max-width: 95vw;
   }
 
-  #move-history {
-    width: 90vw;
-    max-height: 200px;
+  .piece {
+    font-size: 1.8rem;
+  }
+
+  #move-history,
+  #chat-container {
+    display: none;
+  }
+
+  #move-list,
+  #chat-messages {
     font-size: 0.85rem;
+    max-height: 200px;
+  }
+}
+
+
+/* Popup modal layout */
+#popup-container > .modal {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  width: 90vw;
+  max-height: 70vh;
+  overflow-y: auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  z-index: 50;
+}
+
+
+@media (min-width: 1025px) {
+  .main-layout {
+    gap: 3rem !important; /* More space between columns */
+  }
+
+  #move-history,
+  #chat-container {
+    width: 18rem; /* 288px wide instead of 256px */
+    max-width: 100%;
   }
 }
