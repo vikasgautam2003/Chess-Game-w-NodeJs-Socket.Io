@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,92 +6,91 @@
   <title>vChess Multiplayer</title>
   <link rel="stylesheet" href="/index.css" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .professional-card {
+      border: 1px solid #e0e7ff;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+      border-radius: 1rem;
+    }
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f0f4ff;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #a5b4fc;
+      border-radius: 4px;
+    }
+    #ai-suggestion-modal {
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+    }
+    .modal-content {
+      animation: slideIn 0.3s ease-out;
+    }
+    @keyframes slideIn {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
 </head>
-<body class="bg-gradient-to-br from-[#dfe9f3] to-[#a7bfe8] min-h-screen p-4">
+<body class="bg-gradient-to-br from-[#fdfbff] to-[#f0f4ff] min-h-screen p-4 font-sans text-gray-800">
+  <div class="fixed inset-0 bg-white -z-10"></div>
 
-<div class="absolute top-4 left-4 bg-white px-5 py-2 rounded shadow-lg text-gray-800 font-semibold z-20">
-  👤 You are: <span class="text-blue-600"><%= username %></span>
-</div>
-<input type="hidden" id="player-username" value="<%= username %>" />
+  <div class="absolute top-4 left-4 bg-white px-5 py-2 rounded-full professional-card text-gray-800 font-semibold z-20">
+    <span class="text-gray-500">👤 You are:</span>
+    <span class="text-indigo-600 font-bold tracking-wide"><%= username %></span>
+  </div>
+  <input type="hidden" id="player-username" value="<%= username %>" />
 
-<div id="loader-overlay" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-40">
-  <h2 id="loader-message" class="text-2xl font-semibold text-white mb-4">Finding an opponent...</h2>
-  <div class="animate-spin h-10 w-10 border-4 border-white border-t-transparent rounded-full"></div>
-</div>
-
-<div id="popup-container" class="fixed inset-0 z-50 pointer-events-none"></div>
-
-<div class="main-layout flex flex-col md:flex-row items-start justify-center w-full max-w-screen-xl mx-auto gap-6 mt-20 z-10">
-
-  <!-- Move History Sidebar -->
-  <div id="move-history" class="bg-white rounded-xl shadow p-4 border border-gray-300 w-full md:w-72 max-h-[500px] overflow-y-auto hidden md:block">
-    <h3 class="font-semibold mb-2">📜 Move History</h3>
-    <ol id="move-list" class="list-decimal list-inside text-sm space-y-1"></ol>
+  <div id="loader-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-80 flex flex-col items-center justify-center z-40">
+    <h2 id="loader-message" class="text-3xl font-extrabold text-white mb-6 animate-pulse">Finding an opponent...</h2>
+    <div class="h-12 w-12 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
   </div>
 
-  <!-- Chessboard & Players -->
-  <div id="game-container" class="flex flex-col items-center gap-4 transition-transform duration-500">
-    <div id="black-info" class="bg-white rounded-lg shadow p-3 w-64 text-center">
-      <h3 class="font-semibold">Black: <span id="black-name">Waiting...</span></h3>
-      <div>Time: <span id="black-timer">05:00</span></div>
+  <div id="popup-container" class="fixed inset-0 z-50 pointer-events-none"></div>
+
+  <div class="main-layout flex flex-col md:flex-row items-center md:items-start justify-center w-full max-w-screen-2xl mx-auto gap-y-8 md:gap-x-44 mt-20 z-10">
+    <div id="move-history" class="hidden md:flex bg-white rounded-xl professional-card w-80 h-[600px] flex-col">
+      <div class="bg-indigo-100 text-indigo-800 font-bold text-lg px-6 py-3 rounded-t-xl tracking-wide border-b border-indigo-200">
+        📜 Move History
+      </div>
+      <ol id="move-list" class="list-decimal list-inside text-sm p-4 space-y-1 overflow-y-auto text-gray-600 font-mono"></ol>
     </div>
-    <div class="chessboard-container w-[90vw] max-w-[600px] aspect-square">
-      <div class="chessboard w-full h-full"></div>
+
+    <div id="game-container" class="flex flex-col items-center gap-6 transition-transform duration-500">
+      <div id="black-info" class="bg-white rounded-xl professional-card p-4 w-72 text-center">
+        <h3 class="font-bold text-xl text-red-600">Black: <span id="black-name" class="font-mono text-lg">Waiting...</span></h3>
+        <div class="mt-2 text-gray-500">Time: <span id="black-timer" class="font-mono text-xl">05:00</span></div>
+      </div>
+
+      <div class="chessboard-container w-[90vw] max-w-[600px] aspect-square rounded-xl professional-card">
+        <div class="chessboard w-full h-full rounded-xl overflow-hidden"></div>
+      </div>
+
+      <div id="white-info" class="bg-white rounded-xl professional-card p-4 w-72 text-center">
+        <h3 class="font-bold text-xl text-blue-600">White: <span id="white-name" class="font-mono text-lg">Waiting...</span></h3>
+        <div class="mt-2 text-gray-500">Time: <span id="white-timer" class="font-mono text-xl">05:00</span></div>
+      </div>
     </div>
-    <div id="white-info" class="bg-white rounded-lg shadow p-3 w-64 text-center">
-      <h3 class="font-semibold">White: <span id="white-name">Waiting...</span></h3>
-      <div>Time: <span id="white-timer">05:00</span></div>
+
+    <div id="chat-container" class="hidden md:flex bg-white rounded-xl professional-card w-80 h-[600px] flex-col">
+      <div class="bg-pink-100 text-pink-800 font-bold text-lg px-6 py-3 rounded-t-xl tracking-wide border-b border-pink-200">
+        💬 Chat
+      </div>
+      <div id="chat-messages" class="flex-1 p-4 overflow-y-auto text-sm text-gray-600 font-sans space-y-2"></div>
+      <div class="flex border-t border-gray-200">
+        <input id="chat-input" type="text" placeholder="Type a message..." class="flex-1 bg-pink-50 text-gray-800 px-4 py-3 outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent transition-colors duration-200 rounded-bl-xl" />
+        <button id="send-chat" class="bg-pink-600 hover:bg-pink-700 text-white px-6 font-semibold tracking-wider rounded-br-xl">
+          Send
+        </button>
+      </div>
     </div>
   </div>
 
-  <!-- Chat Sidebar -->
-  <div id="chat-container" class="bg-white rounded-xl shadow border border-gray-300 flex flex-col w-full md:w-72 max-h-[500px] hidden md:flex">
-    <div class="bg-gray-100 px-4 py-2 font-semibold">💬 Chat</div>
-    <div id="chat-messages" class="flex-1 p-2 overflow-y-auto text-sm"></div>
-    <div class="flex border-t">
-      <input id="chat-input" type="text" placeholder="Type a message..." class="flex-1 px-3 py-2 outline-none" />
-      <button id="send-chat" class="bg-blue-500 text-white px-4 hover:bg-blue-600">Send</button>
-    </div>
-  </div>
-</div>
-
-<!-- Mobile Toggle Buttons -->
-<div class="fixed bottom-4 left-4 flex space-x-2 md:hidden z-20">
-  <button id="toggle-history" class="bg-white shadow px-3 py-2 rounded">History</button>
-  <button id="toggle-chat" class="bg-white shadow px-3 py-2 rounded">Chat</button>
-</div>
-
-<!-- Mobile Panels -->
-<div id="mobile-panels" class="md:hidden">
-  <div id="mobile-history" class="hidden fixed top-0 left-0 right-0 bottom-0 bg-white z-50 p-4 overflow-y-auto">
-    <button onclick="document.getElementById('mobile-history').classList.add('hidden')" class="mb-2 text-red-500">✖ Close</button>
-    <h3 class="font-semibold mb-2">📜 Move History</h3>
-    <ol id="move-list" class="list-decimal list-inside text-sm space-y-1"></ol>
-  </div>
-  <div id="mobile-chat" class="hidden fixed top-0 left-0 right-0 bottom-0 bg-white z-50 flex flex-col">
-    <div class="flex justify-between items-center p-2 bg-gray-100 font-semibold">
-      💬 Chat
-      <button onclick="document.getElementById('mobile-chat').classList.add('hidden')" class="text-red-500">✖</button>
-    </div>
-    <div id="chat-messages" class="flex-1 p-2 overflow-y-auto text-sm"></div>
-    <div class="flex border-t">
-      <input id="chat-input" type="text" placeholder="Type a message..." class="flex-1 px-3 py-2 outline-none" />
-      <button id="send-chat" class="bg-blue-500 text-white px-4 hover:bg-blue-600">Send</button>
-    </div>
-  </div>
-</div>
-
-<script>
-  document.getElementById('toggle-history').onclick = () => {
-    document.getElementById('mobile-history').classList.remove('hidden');
-  };
-  document.getElementById('toggle-chat').onclick = () => {
-    document.getElementById('mobile-chat').classList.remove('hidden');
-  };
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/chess.js@0.10.3/chess.min.js"></script>
-<script src="/socket.io/socket.io.js"></script>
-<script type="module" src="/Javscripts/index.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chess.js@0.10.3/chess.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="module" src="/Javscripts/index.js"></script>
 </body>
 </html>
