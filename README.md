@@ -15,7 +15,7 @@ A real-time multiplayer gaming platform featuring live chess, user authenticatio
 
 ---
 
-### ▶️ [Live Demo (Link to your deployed site)](https://your-live-site.com)
+### ▶️ [Live Demo (https://bonzo-gaming-website.onrender.com))
 
 ---
 
