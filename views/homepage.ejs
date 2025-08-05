@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -66,6 +66,100 @@
     }
   </script>
 </body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to Bonzo.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* Apply the Poppins font to the body */
+        body {
+            font-family: 'Poppins', sans-serif;
+            /* Custom background to match the image's deep blue/black with a central glow */
+            background-color: #020617; /* slate-950 */
+            background-image: radial-gradient(circle at center, rgba(76, 29, 149, 0.2), transparent 60%);
+        }
+    </style>
+</head>
+<body class="text-white min-h-screen flex flex-col justify-center items-center p-4">
+
+    <main class="text-center">
+        <h1 class="text-5xl sm:text-6xl md:text-7xl font-bold mb-4">
+            <span class="font-medium text-gray-200">Welcome to</span>
+            <br class="block md:hidden">
+            <span class="font-black bg-gradient-to-r from-violet-500 to-blue-500 text-transparent bg-clip-text">
+                Bonzo.com
+            </span>
+        </h1>
+        
+        <p class="text-base sm:text-lg text-gray-400 max-w-md mx-auto mb-10 tracking-wide">
+            Play Chess, Ludo, and other real-time games with friends or AI opponents.
+        </p>
+
+        <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+            <button onclick="toggleModal(true)" class="bg-yellow-400/90 border border-yellow-400/30 hover:bg-yellow-400 text-black font-semibold py-3 px-6 rounded-lg shadow-md flex items-center justify-center gap-3 w-full sm:w-auto transition">
+                <span>♟️</span>
+                Start Playing
+            </button>
+            
+            <a href="/learn" class="bg-indigo-600/90 border border-indigo-500/30 hover:bg-indigo-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md flex items-center justify-center gap-3 w-full sm:w-auto transition">
+                <span>📖</span>
+                Follow Us
+            </a>
+
+            <a href="/community" class="bg-teal-500/90 border border-teal-500/30 hover:bg-teal-500 text-white font-semibold py-3 px-6 rounded-lg shadow-md flex items-center justify-center gap-3 w-full sm:w-auto transition">
+                <span>🧑‍🤝‍🧑</span>
+                Join Community
+            </a>
+        </div>
+    </main>
+
+    <div id="authModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-50 p-4">
+        <div class="bg-white text-black rounded-2xl shadow-xl w-full max-w-md p-8 space-y-6 relative">
+            <button onclick="toggleModal(false)" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 text-3xl font-bold">&times;</button>
+            <h2 class="text-3xl font-bold text-center text-gray-800">Start Playing</h2>
+
+            <a href="/guest/home" class="block w-full text-center bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-lg font-semibold text-lg">
+                Play as Guest
+            </a>
+
+            <div class="flex items-center justify-between">
+                <hr class="w-full border-gray-300" />
+                <span class="text-sm text-gray-500 px-4">or</span>
+                <hr class="w-full border-gray-300" />
+            </div>
+
+            <form action="/auth/login" method="POST" class="space-y-4">
+                <input type="email" name="email" placeholder="Email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                <input type="password" name="password" placeholder="Password" required class="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-semibold text-lg">
+                    Login
+                </button>
+            </form>
+
+            <p class="text-center text-base text-gray-600">
+                Don't have an account?
+                <a href="/auth/signup" class="text-blue-600 hover:underline">Sign Up</a>
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        function toggleModal(show) {
+            const modal = document.getElementById('authModal');
+            if (show) {
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
 </html>
-
-
