@@ -56,6 +56,14 @@ router.get('/quiz', (req, res) => {
     
 });
 
+router.get('/scram', (req, res) => {
+   res.render('scramble', {
+      username: 'Guest' + Math.floor(1000 + Math.random() * 9000),
+      isGuest: true,
+      title: 'Word Scramble - Bonzo'
+    });
+  });
+
 
 
 module.exports = router;
