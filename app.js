@@ -7,7 +7,7 @@ const connectDB = require('./db');
 
 const setupSocket = require('./sockets/chess');
 const homepageRouter = require('./routes/home');
-const guestRouter = require('./routes/guest-chess');
+const guestRouter = require('./routes/guest-games');
 const authRouter = require('./routes/auth');
 const userRouter = require('./routes/user');
 const decodeToken = require('./middlewares/decodeToken.js');
