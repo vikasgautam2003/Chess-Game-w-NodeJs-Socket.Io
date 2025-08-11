@@ -98,16 +98,34 @@
           </a>
         </div>
 
-        <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 flex flex-col items-center transition-transform duration-300 hover:scale-105">
+       <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 flex flex-col items-center transition-transform duration-300 hover:scale-105 game-card">
           <div class="w-full h-56 rounded-lg overflow-hidden">
-            <img src="/Images/promo-thumb.jpg" alt="Snake" class="w-full h-full object-cover" />
+            <img src="/Images/promo-thumb.jpg" alt="Snake" class="w-full h-full object-cover">
           </div>
-          <h3 class="mt-4 text-xl font-semibold text-white">Snake</h3>
+          <h3 class="mt-4 text-xl font-semibold">Snake</h3>
           <p class="text-sm text-gray-300 mt-2">Retro snake — responsive controls and fun visuals.</p>
-          <a href="/user/snake" class="mt-4 bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 px-8 rounded-full shadow-xl transition duration-300">
-            🎮 Play Now
+
+          
+          <div id="mobileWarning" class="mt-3 bg-yellow-400 text-black text-center rounded-md px-3 py-2 text-xs font-semibold">
+  ⚠️ Feature available on laptop/computer only. Mobile version under development.
+</div>
+
+
+          <a href="/guest/snake" class="mt-4 bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 px-8 rounded-full shadow-xl transition duration-300">
+            🎮 Play as Guest
           </a>
+       </div>
+
+       <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 flex flex-col items-center transition-transform duration-300 hover:scale-105 game-card">
+        <div class="w-full h-56 rounded-lg overflow-hidden">
+          <img src="/Images/marvel-logo-wallpaper (1).jpg" alt="Chess" class="w-full h-full object-cover">
         </div>
+        <h3 class="mt-4 text-xl font-semibold">Quiz</h3>
+        <p class="text-sm text-gray-300 mt-2">Classic realtime Quiz — challenge players instantly.</p>
+        <a href="/guest/quiz" class="mt-4 bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 px-8 rounded-full shadow-xl transition duration-300">
+          🎮 Play as Guest
+        </a>
+    </div>
       </div>
     </section>
 
@@ -117,6 +135,7 @@
     &copy; 2025 Bonzo. All Rights Reserved.
   </footer>
 
+  
 </body>
 </html>
 

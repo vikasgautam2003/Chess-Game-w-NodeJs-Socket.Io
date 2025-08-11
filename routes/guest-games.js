@@ -46,5 +46,16 @@ router.get('/snake', (req, res) => {
 });
 
 
+router.get('/quiz', (req, res) => {
+   
+    res.render('quiz', {
+      username: 'Guest' + Math.floor(1000 + Math.random() * 9000),
+      isGuest: true,
+      title: 'Snake Game - Bonzo'
+    });
+    
+});
+
+
 
 module.exports = router;
