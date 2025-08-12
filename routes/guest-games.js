@@ -46,23 +46,42 @@ router.get('/snake', (req, res) => {
 });
 
 
-router.get('/quiz', (req, res) => {
-   
-    res.render('quiz', {
-      username: 'Guest' + Math.floor(1000 + Math.random() * 9000),
-      isGuest: true,
-      title: 'Snake Game - Bonzo'
-    });
-    
-});
-
 router.get('/scram', (req, res) => {
-   res.render('scramble', {
+  if (req.user && req.user.username) {
+    res.render('scramble', {
+      username: req.user.username,
+      isGuest: false,
+      title: 'Word Scramble - Bonzo'
+    });
+  } else {
+    res.render('scramble', {
       username: 'Guest' + Math.floor(1000 + Math.random() * 9000),
       isGuest: true,
       title: 'Word Scramble - Bonzo'
     });
-  });
+  }
+});
+
+
+
+router.get('/quiz', (req, res) => {
+  if (req.user && req.user.username) {
+    res.render('quiz', {
+      username: req.user.username,
+      isGuest: false,
+      title: 'Quiz Game - Bonzo'
+    });
+  } else {
+    res.render('quiz', {
+      username: 'Guest' + Math.floor(1000 + Math.random() * 9000),
+      isGuest: true,
+      title: 'Quiz Game - Bonzo'
+    });
+  }
+});
+
+
+
 
 
 

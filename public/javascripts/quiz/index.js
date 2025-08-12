@@ -1,190 +1,3 @@
-// document.addEventListener('DOMContentLoaded', () => {
-//   const quizBox = document.querySelector('.quiz-box');
-//   if (!quizBox) return console.error('Quiz box not found!');
-
-//   const timeCountElem = quizBox.querySelector('.timer .timer_sec');
-//   if (!timeCountElem) return console.error('Timer element not found!');
-
-//   const startBtn = document.querySelector('.start_btn button');
-//   const infoBox = document.querySelector('.info_box');
-//   const exitBtn = infoBox.querySelector('.buttons .quit');
-//   const continueBtn = infoBox.querySelector('.buttons .restart');
-//   const optionList = quizBox.querySelector('.option_list');
-//   const nextBtn = quizBox.querySelector('.next_btn');
-//   const totalQueElem = quizBox.querySelector('.total_que strong.text-blue-600');
-//   const resultBox = document.querySelector('.result_box');
-//   const restartBtn = resultBox.querySelector('.buttons1 .restart');
-//   const quitBtn = resultBox.querySelector('.buttons1 .quit');
-
-//   let currentQuestion = 0;
-//   let score = 0;
-//   let timer;
-//   let timerValue = 15;
-//   let timerLineInterval;
-//   let timeLineWidth = 0;
-//   const timeLineMaxWidth = quizBox.querySelector('header .time_line').offsetWidth || 550;
-
-//   // Show total questions count
-//   const totalQuestionsCount = 5; // Or questions.length if available
-//   const totalQueSpans = quizBox.querySelectorAll('.total_que strong.text-blue-600');
-//   if (totalQueSpans.length >= 2) {
-//     totalQueSpans[1].textContent = totalQuestionsCount;
-//   }
-
-//   startBtn.addEventListener('click', () => {
-//     startBtn.parentElement.classList.add('opacity-0', 'pointer-events-none');
-//     infoBox.classList.add('activeinfo');
-//   });
-
-//   exitBtn.addEventListener('click', () => {
-//     infoBox.classList.remove('activeinfo');
-//     startBtn.parentElement.classList.remove('opacity-0', 'pointer-events-none');
-//   });
-
-//   continueBtn.addEventListener('click', () => {
-//     infoBox.classList.remove('activeinfo');
-//     quizBox.classList.add('activeQuiz');
-//     showQuestion(currentQuestion);
-//     updateQuestionCounter(currentQuestion + 1);
-//     startTimer(timerValue);
-//     startTimerLine(0);
-//   });
-
-//   nextBtn.addEventListener('click', () => {
-//     currentQuestion++;
-//     if (currentQuestion < totalQuestionsCount) {
-//       showQuestion(currentQuestion);
-//       updateQuestionCounter(currentQuestion + 1);
-//       resetTimer();
-//       startTimer(timerValue);
-//       resetTimerLine();
-//       startTimerLine(0);
-//       nextBtn.classList.add('hidden');
-//     } else {
-//       showResult();
-//     }
-//   });
-
-//   restartBtn.addEventListener('click', () => {
-//     resultBox.classList.remove('activeResult');
-//     quizBox.classList.add('activeQuiz');
-//     currentQuestion = 0;
-//     score = 0;
-//     showQuestion(currentQuestion);
-//     updateQuestionCounter(1);
-//     resetTimer();
-//     startTimer(timerValue);
-//     resetTimerLine();
-//     startTimerLine(0);
-//     nextBtn.classList.add('hidden');
-//   });
-
-//   quitBtn.addEventListener('click', () => {
-//     window.location.reload();
-//   });
-
-//   function showQuestion(index) {
-//     // Assuming you have a global `questions` array defined somewhere
-//     const questionObj = questions[index];
-//     if (!questionObj) return;
-
-//     const queText = quizBox.querySelector('.que_text span');
-//     queText.textContent = questionObj.numb + '. ' + questionObj.question;
-
-//     optionList.innerHTML = '';
-//     questionObj.options.forEach(option => {
-//       const optionBtn = document.createElement('div');
-//       optionBtn.className = 'option';
-//       optionBtn.textContent = option;
-//       optionList.appendChild(optionBtn);
-
-//       optionBtn.addEventListener('click', () => optionSelected(optionBtn, questionObj.answer));
-//     });
-//   }
-
-//   function optionSelected(selectedOption, correctAnswer) {
-//     clearInterval(timer);
-//     clearInterval(timerLineInterval);
-
-//     const allOptions = optionList.querySelectorAll('.option');
-//     allOptions.forEach(option => {
-//       option.classList.add('disabled');
-//       if (option.textContent === correctAnswer) {
-//         option.classList.add('correct');
-//         option.insertAdjacentHTML('beforeend', '<div class="icon tick"><i class="fas fa-check"></i></div>');
-//       }
-//     });
-
-//     if (selectedOption.textContent === correctAnswer) {
-//       score++;
-//       selectedOption.classList.add('correct');
-//       selectedOption.insertAdjacentHTML('beforeend', '<div class="icon tick"><i class="fas fa-check"></i></div>');
-//     } else {
-//       selectedOption.classList.add('incorrect');
-//       selectedOption.insertAdjacentHTML('beforeend', '<div class="icon cross"><i class="fas fa-times"></i></div>');
-//     }
-
-//     nextBtn.classList.remove('hidden');
-//   }
-
-//   function startTimer(duration) {
-//     let time = duration;
-//     timeCountElem.textContent = time < 10 ? '0' + time : time;
-
-//     timer = setInterval(() => {
-//       time--;
-//       timeCountElem.textContent = time < 10 ? '0' + time : time;
-//       if (time <= 0) {
-//         clearInterval(timer);
-//         disableOptions();
-//         nextBtn.classList.remove('hidden');
-//       }
-//     }, 1000);
-//   }
-
-//   function startTimerLine(startWidth) {
-//     timeLineWidth = startWidth;
-//     timeline.style.width = timeLineWidth + 'px';
-
-//     timerLineInterval = setInterval(() => {
-//       timeLineWidth += timeLineMaxWidth / (timerValue * 10);
-//       timeline.style.width = timeLineWidth + 'px';
-//       if (timeLineWidth >= timeLineMaxWidth) {
-//         clearInterval(timerLineInterval);
-//       }
-//     }, 100);
-//   }
-
-//   function resetTimer() {
-//     clearInterval(timer);
-//     timeCountElem.textContent = timerValue;
-//   }
-
-//   function resetTimerLine() {
-//     clearInterval(timerLineInterval);
-//     timeline.style.width = '0';
-//   }
-
-//   function disableOptions() {
-//     const options = optionList.querySelectorAll('.option');
-//     options.forEach(option => option.classList.add('disabled'));
-//   }
-
-//   function updateQuestionCounter(index) {
-//     const queNumElems = quizBox.querySelectorAll('.total_que strong.text-blue-600');
-//     if (queNumElems.length >= 1) {
-//       queNumElems[0].textContent = index;
-//     }
-//   }
-
-//   function showResult() {
-//     quizBox.classList.remove('activeQuiz');
-//     resultBox.classList.add('activeResult');
-
-//     const scoreText = resultBox.querySelector('.score_text');
-//     scoreText.innerHTML = `You scored <strong>${score}</strong> out of <strong>${totalQuestionsCount}</strong>!`;
-//   }
-// });
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -229,6 +42,23 @@ document.addEventListener('DOMContentLoaded', () => {
         infoBox.classList.add('hidden');
         startBtnContainer.classList.remove('hidden');
     };
+
+        
+        const bodyElement = document.body;
+      
+        const isGuest = bodyElement.dataset.isGuest === 'true'; 
+
+        const exit = document.querySelector('.exit');
+
+        exit.addEventListener('click', (event) => {
+            event.preventDefault();
+            if (isGuest) {
+                location.href = '/guest/home';
+            } else {
+                location.href = '/user/home';
+            }
+        });
+
 
     continueBtn.onclick = () => {
         infoBox.classList.add('hidden');

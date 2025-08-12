@@ -31,5 +31,48 @@ router.get('/snake', (req, res) => {
   }
 });
 
+
+router.get('/quiz', (req, res) => {
+  if (req.user && req.user.username) {
+    res.render('quiz', {
+      username: req.user.username,
+      isGuest: false,
+      title: 'Quiz Game - Bonzo'
+    })
+  }
+  else
+  {
+    res.render('quiz', {
+      username: 'Guest' + Math.floor(1000 + Math.random() * 9000
+      ),
+      isGuest: true,
+      title: 'Quiz Game - Bonzo'
+    })
+  }
+})
+
+//for scram
+
+router.get('/scram', (req, res) => {
+  
+  if (req.user && req.user.username) {
+    res.render('scramble', {
+      username: req.user.username,
+      isGuest: false,
+      title: 'Scramble Game - Bonzo'
+    })
+  }
+  else
+  {
+     res.render('scramble', {
+      username: 'Guest' + Math.floor(1000 + Math.random() * 9000
+      ),
+      isGuest: true,
+      title: 'Scramble Game - Bonzo'
+     })
+      
+  }
+})
+
 module.exports = router;
 
