@@ -1,165 +1,238 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Chess.com</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gradient-to-br from-gray-900 to-black text-white min-h-screen flex flex-col justify-center items-center px-4 relative">
-
-  <div class="text-center max-w-xl w-full z-10">
-    <h1 class="text-4xl sm:text-5xl font-bold mb-4">Welcome to <span class="text-yellow-400">Bonzo.com</span></h1>
-    <p class="text-gray-300 text-lg sm:text-xl mb-8">Play Game online with friends or against the computer.</p>
-
-    <div class="flex flex-col sm:flex-row justify-center gap-4">
-      <button onclick="toggleModal(true)"
-         class="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 px-6 rounded-full shadow-md transition">
-         ♟️ Start Playing
-      </button>
-      <a href="/learn"
-         class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-full shadow-md transition">
-         📖 Follow Us 
-      </a>
-      <a href="/community"
-         class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-full shadow-md transition">
-         🧑‍🤝‍🧑 Join the Community
-      </a>
-    </div>
-  </div>
-
-
-  <div id="authModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-50">
-    <div class="bg-white text-black rounded-2xl shadow-xl w-full max-w-xl p-10 space-y-6 relative">
-      <button onclick="toggleModal(false)" class="absolute top-3 right-4 text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
-      <h2 class="text-3xl font-bold text-center text-gray-800">Play Chess</h2>
-
-      <a href="/guest/home"
-         class="block w-full text-center bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-lg font-semibold text-lg">
-         Play as Guest
-      </a>
-
-      <div class="flex items-center justify-between">
-        <hr class="w-1/3 border-gray-300" />
-        <span class="text-sm text-gray-500">or</span>
-        <hr class="w-1/3 border-gray-300" />
-      </div>
-
-      <form action="/auth/login" method="POST" class="space-y-4">
-        <input type="email" name="email" placeholder="Email" required class="w-full px-5 py-3 border border-gray-300 rounded-lg text-lg" />
-        <input type="password" name="password" placeholder="Password" required class="w-full px-5 py-3 border border-gray-300 rounded-lg text-lg" />
-        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-semibold text-lg">
-          Login
-        </button>
-      </form>
-
-      <p class="text-center text-base text-gray-600">Don't have an account?
-        <a href="/auth/signup" class="text-blue-600 hover:underline">Sign Up</a>
-      </p>
-    </div>
-  </div>
-
-  <script>
-    function toggleModal(show) {
-      const modal = document.getElementById('authModal');
-      modal.classList.toggle('hidden', !show);
-    }
-  </script>
-</body>
-</html> -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Welcome to Bonzo.com</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <style>
-        /* Apply the Poppins font to the body */
-        body {
-            font-family: 'Poppins', sans-serif;
-            /* Custom background to match the image's deep blue/black with a central glow */
-            background-color: #020617; /* slate-950 */
-            background-image: radial-gradient(circle at center, rgba(76, 29, 149, 0.2), transparent 60%);
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Welcome to Bonzo.com</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700;900&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #020617; /* slate-950 */
+      background-image: radial-gradient(
+        circle at center,
+        rgba(76, 29, 149, 0.2),
+        transparent 60%
+      );
+    }
+    body.menu-open {
+      overflow: hidden;
+    }
+  </style>
 </head>
-<body class="text-white min-h-screen flex flex-col justify-center items-center p-4">
+<body class="text-white min-h-screen bg-[#020617]">
 
-    <main class="text-center">
-        <h1 class="text-5xl sm:text-6xl md:text-7xl font-bold mb-4">
-            <span class="font-medium text-gray-200">Welcome to</span>
-            <br class="block md:hidden">
-            <span class="font-black bg-gradient-to-r from-violet-500 to-blue-500 text-transparent bg-clip-text">
-                Bonzo.com
-            </span>
-        </h1>
-        
-        <p class="text-base sm:text-lg text-gray-400 max-w-md mx-auto mb-10 tracking-wide">
-            Play Chess, Ludo, and other real-time games with friends or AI opponents.
-        </p>
+<header
+  id="main-header"
+  class="w-full flex items-center justify-between px-4 sm:px-6 lg:px-8 py-6
+         bg-[#020617] bg-opacity-80 backdrop-blur-sm
+         sticky top-0 z-50 transition-transform duration-300"
+>
+  <a href="/" class="text-4xl lg:text-3xl font-black bg-gradient-to-r from-violet-500 to-blue-500 bg-clip-text text-transparent select-none">Bonzo</a>
+  <nav>
+    <ul class="hidden lg:flex space-x-12 text-white lg:text-lg font-semibold tracking-wide">
+      <li><a href="#about" class="hover:text-violet-400 transition">About</a></li>
+      <li><a href="#games" class="hover:text-violet-400 transition">Games</a></li>
+      <li><a href="/contact" class="hover:text-violet-400 transition">Contact</a></li>
+    </ul>
+  </nav>
+  <div class="hidden lg:flex space-x-6 text-white lg:text-lg font-semibold tracking-wide">
+    <a href="/auth/login" class="hover:text-violet-400 transition">Login</a>
+    <span class="select-none">|</span>
+    <a href="/auth/signup" class="hover:text-violet-400 transition">Signup</a>
+  </div>
+  <button id="mobileMenuButton" class="lg:hidden p-2 rounded-md hover:bg-violet-700 transition" aria-label="Open menu">
+    <svg class="w-9 h-9 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+  </button>
+</header>
 
-        <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
-            <button onclick="toggleModal(true)" class="bg-yellow-400/90 border border-yellow-400/30 hover:bg-yellow-400 text-black font-semibold py-3 px-6 rounded-lg shadow-md flex items-center justify-center gap-3 w-full sm:w-auto transition">
-                <span>♟️</span>
-                Start Playing
-            </button>
-            
-            <a href="/learn" class="bg-indigo-600/90 border border-indigo-500/30 hover:bg-indigo-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md flex items-center justify-center gap-3 w-full sm:w-auto transition">
-                <span>📖</span>
-                Follow Us
-            </a>
-
-            <a href="/community" class="bg-teal-500/90 border border-teal-500/30 hover:bg-teal-500 text-white font-semibold py-3 px-6 rounded-lg shadow-md flex items-center justify-center gap-3 w-full sm:w-auto transition">
-                <span>🧑‍🤝‍🧑</span>
-                Join Community
-            </a>
-        </div>
-    </main>
-
-    <div id="authModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-50 p-4">
-        <div class="bg-white text-black rounded-2xl shadow-xl w-full max-w-md p-8 space-y-6 relative">
-            <button onclick="toggleModal(false)" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 text-3xl font-bold">&times;</button>
-            <h2 class="text-3xl font-bold text-center text-gray-800">Start Playing</h2>
-
-            <a href="/guest/home" class="block w-full text-center bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-lg font-semibold text-lg">
-                Play as Guest
-            </a>
-
-            <div class="flex items-center justify-between">
-                <hr class="w-full border-gray-300" />
-                <span class="text-sm text-gray-500 px-4">or</span>
-                <hr class="w-full border-gray-300" />
-            </div>
-
-            <form action="/auth/login" method="POST" class="space-y-4">
-                <input type="email" name="email" placeholder="Email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                <input type="password" name="password" placeholder="Password" required class="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-semibold text-lg">
-                    Login
-                </button>
-            </form>
-
-            <p class="text-center text-base text-gray-600">
-                Don't have an account?
-                <a href="/auth/signup" class="text-blue-600 hover:underline">Sign Up</a>
-            </p>
-        </div>
+ <div id="mobileSidebar" class="fixed inset-y-0 left-0 w-64 bg-[#1e1b3a] bg-opacity-95 backdrop-blur-md shadow-lg transform -translate-x-full transition-transform duration-300 z-60">
+    <div class="flex items-center justify-between px-6 py-4 border-b border-violet-700">
+      <a href="/" class="text-2xl font-black bg-gradient-to-r from-violet-500 to-blue-500 bg-clip-text text-transparent select-none">Bonzo</a>
+      <button id="mobileMenuClose" class="p-1 rounded-md hover:bg-violet-700 transition text-white" aria-label="Close menu">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
     </div>
-    
-    <script>
-        function toggleModal(show) {
-            const modal = document.getElementById('authModal');
-            if (show) {
-                modal.classList.remove('hidden');
-            } else {
-                modal.classList.add('hidden');
-            }
-        }
-    </script>
+    <nav class="flex flex-col px-6 py-6 space-y-6 font-semibold text-white">
+      <a href="#about" class="hover:text-violet-400 transition">About</a>
+      <a href="#games" class="hover:text-violet-400 transition">Games</a>
+      <a href="/contact" class="hover:text-violet-400 transition">Contact</a>
+      <div class="border-t border-violet-700"></div>
+      <a href="/auth/login" class="hover:text-violet-400 transition">Login</a>
+      <a href="/auth/signup" class="hover:text-violet-400 transition">Signup</a>
+    </nav>
+  </div>
+  <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50"></div>
+
+<main class="text-center w-full px-4 min-h-screen flex flex-col items-center justify-center">
+    <h1 class="text-5xl sm:text-7xl lg:text-8xl font-bold mb-6">
+      <span class="font-medium text-gray-200">Welcome to</span>
+      <br class="block sm:hidden" />
+      <span class="font-black bg-gradient-to-r from-violet-500 to-blue-500 text-transparent bg-clip-text">Bonzo.com</span>
+    </h1>
+    <p class="text-lg sm:text-xl text-gray-400 max-w-3xl mx-auto mb-10 tracking-wide">
+      Play Chess, Ludo, and other real-time games with friends or AI opponents.
+    </p>
+    <div class="flex flex-col lg:flex-row justify-center items-center gap-5 w-full max-w-lg mx-auto">
+      <button onclick="toggleModal(true)" class="bg-yellow-400/90 border border-yellow-400/30 hover:bg-yellow-400 text-black font-semibold py-3 px-10 text-lg sm:py-4 sm:px-12 sm:text-xl rounded-lg shadow-md flex items-center justify-center gap-3 w-full lg:w-auto transition">
+        <span>♟️</span>
+        Start Playing
+      </button>
+      <a href="/learn" class="bg-indigo-600/90 border border-indigo-500/30 hover:bg-indigo-600 text-white font-semibold py-3 px-10 text-lg sm:py-4 sm:px-12 sm:text-xl rounded-lg shadow-md flex items-center justify-center gap-3 w-full lg:w-auto transition">
+        <span>📖</span>
+        Learn More
+      </a>
+      <a href="/community" class="bg-teal-500/90 border border-teal-500/30 hover:bg-teal-500 text-white font-semibold py-3 px-10 text-lg sm:py-4 sm:px-12 sm:text-xl rounded-lg shadow-md flex items-center justify-center gap-3 w-full lg:w-auto transition">
+        <span>🧑‍🤝‍🧑</span>
+        Join Community
+      </a>
+    </div>
+  </main>
+  
+<section id="about" class="w-full bg-slate-900/50 py-20 lg:py-28">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+      <div class="grid grid-cols-2 grid-rows-3 gap-4 h-80 md:h-96">
+        <div class="bg-violet-500/20 rounded-lg shadow-lg col-span-1 row-span-2"></div>
+        <div class="bg-blue-500/20 rounded-lg shadow-lg col-span-1 row-span-1"></div>
+        <div class="bg-teal-500/20 rounded-lg shadow-lg col-span-1 row-span-1"></div>
+        <div class="bg-yellow-500/20 rounded-lg shadow-lg col-span-2 row-span-1"></div>
+      </div>
+      <div class="text-center lg:text-left">
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold">More Than Just a Game.</h2>
+        <p class="mt-4 text-lg text-gray-400 max-w-xl mx-auto lg:mx-0">
+          At Bonzo.com, we believe games are a powerful way to connect. We provide a seamless platform for classics like Chess and Ludo. Challenge our AI or invite friends for a match. It's all about strategy, fun, and timeless competition.
+        </p>
+        <a href="#games" class="mt-8 inline-block bg-violet-600 hover:bg-violet-700 text-white font-semibold py-3 px-8 rounded-lg shadow-md transition">
+          Explore Games
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="games" class="w-full py-20 lg:py-28">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center">
+      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-violet-400 to-blue-400 bg-clip-text text-transparent">
+        Choose Your Challenge
+      </h2>
+      <p class="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
+        From timeless classics to modern brain-teasers, we have a game for every mood and skill level.
+      </p>
+    </div>
+    <div class="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div class="bg-slate-900 rounded-xl shadow-lg overflow-hidden border border-slate-800 hover:border-violet-600 transition duration-300 transform hover:-translate-y-2">
+        <div class="bg-slate-800 h-48 flex items-center justify-center"></div>
+        <div class="p-6"><h3 class="text-2xl font-bold">Classic Chess</h3><p class="mt-2 text-gray-400">The ultimate game of strategy. Outwit your opponent in the timeless battle of kings, queens, and knights.</p></div>
+      </div>
+      <div class="bg-slate-900 rounded-xl shadow-lg overflow-hidden border border-slate-800 hover:border-violet-600 transition duration-300 transform hover:-translate-y-2">
+        <div class="bg-slate-800 h-48 flex items-center justify-center"></div>
+        <div class="p-6"><h3 class="text-2xl font-bold">Word Scramble</h3><p class="mt-2 text-gray-400">Put your vocabulary to the test. Form words, score points, and claim victory with your lexical prowess.</p></div>
+      </div>
+      <div class="bg-slate-900 rounded-xl shadow-lg overflow-hidden border border-slate-800 hover:border-violet-600 transition duration-300 transform hover:-translate-y-2">
+        <div class="bg-slate-800 h-48 flex items-center justify-center"></div>
+        <div class="p-6"><h3 class="text-2xl font-bold">Trivia Quiz</h3><p class="mt-2 text-gray-400">Think you know it all? Prove it! Face off against friends in a fast-paced trivia challenge on various topics.</p></div>
+      </div>
+      <div class="bg-slate-900 rounded-xl shadow-lg overflow-hidden border border-slate-800 hover:border-violet-600 transition duration-300 transform hover:-translate-y-2">
+        <div class="bg-slate-800 h-48 flex items-center justify-center"></div>
+        <div class="p-6"><h3 class="text-2xl font-bold">Retro Snake</h3><p class="mt-2 text-gray-400">A throwback classic! Grow your snake as long as you can, but don't run into the walls or your own tail.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="testimonials" class="w-full bg-slate-900/50 py-20 lg:py-28">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center">
+      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold">Loved by Players Worldwide</h2>
+      <p class="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
+        Don't just take our word for it. Here's what some of our players have to say about their experience on Bonzo.
+      </p>
+    </div>
+    <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="bg-slate-900 p-8 rounded-xl shadow-lg border border-slate-800 flex flex-col items-center text-center">
+        <img class="w-24 h-24 rounded-full object-cover border-4 border-slate-700" src="[placeholder_for_image_1.jpg]" alt="Profile picture of Sarah L.">
+        <p class="mt-6 text-lg text-gray-300">"The chess AI is genuinely challenging! It's the perfect way to warm up before a real match. The interface is clean and completely seamless."</p>
+        <div class="mt-6"><h4 class="text-xl font-bold">Sarah L.</h4></div>
+      </div>
+      <div class="bg-slate-900 p-8 rounded-xl shadow-lg border border-slate-800 flex flex-col items-center text-center">
+        <img class="w-24 h-24 rounded-full object-cover border-4 border-slate-700" src="[placeholder_for_image_2.jpg]" alt="Profile picture of Mike R.">
+        <p class="mt-6 text-lg text-gray-300">"Finally, a place to play Ludo with my family across the country. The real-time connection is flawless. Highly recommended for some good old-fashioned fun!"</p>
+        <div class="mt-6"><h4 class="text-xl font-bold">Mike R.</h4></div>
+      </div>
+      <div class="bg-slate-900 p-8 rounded-xl shadow-lg border border-slate-800 flex flex-col items-center text-center">
+        <img class="w-24 h-24 rounded-full object-cover border-4 border-slate-700" src="[placeholder_for_image_3.jpg]" alt="Profile picture of Chloe J.">
+        <p class="mt-6 text-lg text-gray-300">"I'm addicted to the daily trivia quiz! The questions are always interesting and it's a great way to unwind after a long day. 10/10 would recommend!"</p>
+        <div class="mt-6"><h4 class="text-xl font-bold">Chloe J.</h4></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="upcoming-game" class="w-full py-20 lg:py-28">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center">
+      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold">Straight from the Forge</h2>
+      <p class="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
+        We're always working on new ways to play. Get a sneak peek at what's coming next to the Bonzo universe.
+      </p>
+    </div>
+    <div class="mt-16 max-w-5xl mx-auto bg-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-800">
+      <div class="grid lg:grid-cols-5">
+        <div class="lg:col-span-2 bg-slate-800 min-h-[250px] lg:min-h-full flex items-center justify-center">
+          <img src="[placeholder_for_ludo_image.jpg]" alt="A vibrant Ludo board game in action" class="w-full h-full object-cover">
+        </div>
+        <div class="lg:col-span-3 p-8 lg:p-12 flex flex-col justify-center text-center lg:text-left">
+          <h3 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-amber-400 to-yellow-500 bg-clip-text text-transparent">Ludo Champions</h3>
+          <p class="mt-4 text-gray-400 text-lg">Get ready for a modern take on the beloved classic! Roll the dice and race your tokens to be the first to get all your pieces home. Featuring stunning animations and real-time multiplayer.</p>
+          <div class="mt-8"><span class="inline-block bg-yellow-400 text-slate-900 text-sm font-semibold px-4 py-2 rounded-full shadow-md">In Development — Releasing October 2025</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="w-full bg-slate-900 border-t border-slate-800">
+  <div class="py-12 px-4 sm:px-6 lg:px-12 xl:px-24">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center md:text-left">
+      <div><h3 class="text-2xl font-black bg-gradient-to-r from-violet-500 to-blue-500 bg-clip-text text-transparent">Bonzo</h3><p class="mt-2 text-gray-400 max-w-xs mx-auto md:mx-0">Your premier destination for classic online games. Connecting players through strategy and fun.</p></div>
+      <div><h4 class="text-lg font-semibold tracking-wider uppercase">Games</h4><ul class="mt-4 space-y-3"><li><a href="#" class="text-gray-300 hover:text-violet-400 transition">Classic Chess</a></li><li><a href="#" class="text-gray-300 hover:text-violet-400 transition">Ludo Champions</a></li><li><a href="#" class="text-gray-300 hover:text-violet-400 transition">Word Scramble</a></li></ul></div>
+      <div><h4 class="text-lg font-semibold tracking-wider uppercase">Contact</h4><ul class="mt-4 space-y-3"><li><a href="mailto:hello@bonzo.com" class="text-gray-300 hover:text-violet-400 transition inline-flex items-center justify-center md:justify-start">Email Us</a></li><li><a href="#" class="text-gray-300 hover:text-violet-400 transition inline-flex items-center justify-center md:justify-start">Live Message</a></li></ul></div>
+      <div><h4 class="text-lg font-semibold tracking-wider uppercase">Follow Us</h4><div class="mt-4 flex space-x-5 justify-center md:justify-start">
+        <a href="#" class="text-gray-400 hover:text-violet-400 transition"><span class="sr-only">Facebook</span></a>
+        <a href="#" class="text-gray-400 hover:text-violet-400 transition"><span class="sr-only">Instagram</span></a>
+      </div></div>
+    </div>
+    <div class="mt-12 pt-8 border-t border-slate-800 text-center text-gray-500"><p>&copy; 2025 Bonzo.com. All Rights Reserved.</p></div>
+  </div>
+</footer>
+
+<div id="authModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-50 p-4">
+    <div class="bg-white text-black rounded-2xl shadow-xl w-full max-w-md p-6 sm:p-8 space-y-6 relative">
+      <button onclick="toggleModal(false)" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 text-3xl font-bold">&times;</button>
+      <h2 class="text-2xl sm:text-3xl font-bold text-center text-gray-800">Start Playing</h2>
+      <a href="/guest/home" class="block w-full text-center bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-lg font-semibold text-lg">Play as Guest</a>
+      <div class="flex items-center justify-between"><hr class="w-full border-gray-300" /><span class="text-sm text-gray-500 px-4">or</span><hr class="w-full border-gray-300" /></div>
+      <form action="/auth/login" method="POST" class="space-y-4">
+        <input type="email" name="email" placeholder="Email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <input type="password" name="password" placeholder="Password" required class="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-semibold text-lg">Login</button>
+      </form>
+      <p class="text-center text-base text-gray-600">Don't have an account? <a href="/auth/signup" class="text-blue-600 hover:underline">Sign Up</a></p>
+    </div>
+  </div>
+
+<script src="/javascripts/website/homepage.js"></script>
 </body>
 </html>
