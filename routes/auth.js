@@ -48,10 +48,16 @@ router.post('/login', async (req, res) => {
 
   try {
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).send('Invalid credentials');
+    // MODIFIED: Instead of sending an error page, we re-render the login page with an error message.
+    if (!user) {
+        return res.render('login', { error: 'Invalid credentials. Please try again.' });
+    }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).send('Invalid credentials');
+    // MODIFIED: Same change here for an incorrect password.
+    if (!isMatch) {
+        return res.render('login', { error: 'Invalid credentials. Please try again.' });
+    }
 
     const token = jwt.sign(
       { id: user._id, username: user.username },
@@ -62,7 +68,8 @@ router.post('/login', async (req, res) => {
     res.redirect('/user/home');
   } catch (err) {
     console.error(err);
-    res.status(500).send('Server error');
+    // MODIFIED: It's good practice to also handle server errors gracefully.
+    res.render('login', { error: 'A server error occurred. Please try again later.' });
   }
 });
 
