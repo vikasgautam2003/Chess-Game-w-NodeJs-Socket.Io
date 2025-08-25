@@ -120,7 +120,7 @@ The application will be available at http://localhost:3000.
 Distributed under the MIT License. See LICENSE for more information.
 
 📧 Contact
-Vikas Gautam - @your_twitter_handle - your.email@example.com
+Vikas Gautam Linkedin -(https://www.linkedin.com/in/vikas-gautam-ab5ab8278/)
 
 Project Link: https://github.com/your-username/bonzo-gaming-website
 
