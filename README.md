@@ -23,7 +23,7 @@ A real-time multiplayer gaming platform featuring live chess, user authenticatio
 
 Bonzo Gaming is a modern, web-based platform designed for real-time multiplayer strategy games. The flagship game is a fully functional chess application where two players can compete live, with moves synchronized instantly across their browsers. The project leverages a robust backend stack for handling game logic, user data, and secure authentication, while the frontend uses high-performance animation libraries to create a smooth and engaging user experience.
 
-![Project Screenshot](https://placehold.co/800x400/020617/FFFFFF?text=Bonzo+Gaming+Screenshot)
+![Project Screenshot](/images/bonzo.png)
 
 ---
 
