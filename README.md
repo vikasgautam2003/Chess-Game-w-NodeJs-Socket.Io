@@ -1,4 +1,4 @@
-# ♟️ Bonzo Gaming Website
+#  Bonzo Gaming Website
 
 A real-time multiplayer gaming platform featuring live chess, user authentication, and modern animations. Built with Node.js, MongoDB, Socket.IO, and GSAP.
 
